@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "110741600305",
+    "project_id": "wastegram-47764",
+    "storage_bucket": "wastegram-47764.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110741600305:android:0651c4e914758ef02cbd10",
+        "android_client_info": {
+          "package_name": "com.flutter.wastegram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110741600305-6arvgdlumfq7od7g3phc5gig4511kier.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9RauiiVs6xznqaMCMY3Rn_DsfX32I-dM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110741600305-6arvgdlumfq7od7g3phc5gig4511kier.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
