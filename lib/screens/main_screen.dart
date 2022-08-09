@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
-
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
@@ -20,7 +19,58 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final DateFormat formatter = DateFormat('EEEE, MMMM d, y');
   final picker = ImagePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Wastegram'),
+        centerTitle: true
+      ),
+      body: StreamBuilder(
+          stream:
+              FirebaseFirestore.instance.collection('posts').snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData &&
+                snapshot.data!.docs != null &&
+                snapshot.data!.docs.isNotEmpty
+              ) {
+              return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var post = snapshot.data!.docs[index];
+                    return ListTile(
+                        title: Text(formatter.format(post['post_date'].toDate())),
+                        trailing: circularBackdrop(context, Text(post['waste_count'].toString())),
+                    );
+                  });
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          }),
+      floatingActionButton: NewPostButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
+  Widget circularBackdrop(BuildContext context, Text text) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white24,
+        borderRadius: BorderRadius.all(Radius.circular(15.0))
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
+      child: text
+    );
+  }
+}
+
+class NewPostButton extends StatelessWidget {
+  final picker = ImagePicker();
   var locationService = Location();
+
+  NewPostButton({Key? key}) : super(key: key);
 
   /*
    * Citation for the following function:
@@ -56,7 +106,6 @@ class _MainScreenState extends State<MainScreen> {
       locationData = null;
     }
     locationData = await locationService.getLocation();
-    // setState(() {});
     print(locationData.latitude);
     print(locationData.longitude);
   }
@@ -87,59 +136,6 @@ class _MainScreenState extends State<MainScreen> {
       return;
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wastegram'),
-        centerTitle: true
-      ),
-      body: StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('posts').snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData &&
-                snapshot.data!.docs != null &&
-                snapshot.data!.docs.isNotEmpty
-              ) {
-              return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    var post = snapshot.data!.docs[index];
-                    return ListTile(
-                        title: Text(formatter.format(post['post_date'].toDate())),
-                        trailing: circularBackdrop(context, Text(post['waste_count'].toString())),
-                    );
-                  });
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
-      floatingActionButton: NewPostButton(getImage: () => getImage(), getLocation: () => getLocation()),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
-
-  Widget circularBackdrop(BuildContext context, Text text) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white24,
-        borderRadius: BorderRadius.all(Radius.circular(15.0))
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
-      child: text
-    );
-  }
-}
-
-class NewPostButton extends StatelessWidget {
-  final Future Function() getImage;
-  final Future Function() getLocation;
-
-  const NewPostButton({Key? key, required this.getImage, required this.getLocation}) : super(key: key);
-  // const NewPostButton({Key? key, required this.getImage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
