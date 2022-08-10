@@ -13,7 +13,7 @@ class NewPostButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.camera_alt),
         onPressed: () {
           Navigator.of(context).pushNamed(
             NewPostScreen.routeName

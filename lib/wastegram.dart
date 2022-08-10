@@ -1,4 +1,6 @@
 export 'app.dart';
+// Models
+export 'models/post_dto.dart';
 // Screens
 export 'screens/detail_screen.dart';
 export 'screens/main_screen.dart';

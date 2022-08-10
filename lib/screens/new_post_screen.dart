@@ -22,6 +22,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
   LocationData? locationData;
   var locationService = Location();
 
+  final formKey = GlobalKey<FormState>();
+  final postValues = PostDTO();
+
   @override
   void initState() {
     super.initState();
@@ -62,8 +65,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
     locationData = await locationService.getLocation();
     setState(() {});
-    // print(locationData.latitude);
-    // print(locationData.longitude);
   }
 
   /*
@@ -103,28 +104,63 @@ class _NewPostScreenState extends State<NewPostScreen> {
       body: Column(children: [
         // TODO
         // Show circular if it's still loading or display a button to select if it returns null
-        Placeholder(),
+        displayImage(url),
         SizedBox(height: 40),
-        Text('Input the weight'),
-        SizedBox(height: 40),
-        Text('(${locationData?.latitude},${locationData?.longitude})'),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: TextFormField(
+            autofocus: true,
+            textAlign: TextAlign.center,
+            decoration: const InputDecoration(
+              hintText: 'Input the waste count'
+            ),
+            keyboardType: TextInputType.number,
+            validator: (value) => validateCount(value!),
+            onChanged: (value) {
+              postValues.wasteCount = int.parse(value);
+            }
+          ),
+        ),
         SizedBox(height: 40),
         ElevatedButton(
-          child: Text('Post it!'),
+          child: Icon(Icons.cloud_upload_outlined),
           onPressed: () {
-            FirebaseFirestore.instance
-              .collection('posts')
-              .add({
-                'post_date': DateTime.now(),
-                'waste_count': 10,
-                'lat': 5,
-                'lon': 0.5
-              });
+            updateFirebase(postValues, url, locationData);
             Navigator.of(context).pop();
-            // Navigator.of(context).pushReplacementNamed(MainScreen.routeName);
           },
         )
       ]),
     );
+  }
+
+  void updateFirebase(PostDTO postDTO, String? url, LocationData? locationData) {
+    postDTO.postDate = DateTime.now();
+    postDTO.imageURL = url;
+    postDTO.latitude = locationData!.latitude;
+    postDTO.longtitude = locationData.longitude;
+
+    FirebaseFirestore.instance
+    .collection('posts')
+    .add({
+      'post_date': postDTO.postDate,
+      'image': postDTO.imageURL,
+      'waste_count': postDTO.wasteCount,
+      'lat': postDTO.latitude,
+      'lon': postDTO.longtitude
+    });
+  }
+
+  Widget displayImage(String? url) {
+    if (url != null) {
+      return Image.network(url);
+    } else {
+      return const Center(child: CircularProgressIndicator());
+    }
+  }
+
+  String? validateCount(String? count) {
+    if (count == null) {
+      return 'Please input a number';
+    }
   }
 }
