@@ -14,7 +14,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final DateFormat formatter = DateFormat('EEEE, MMMM d, y');
   final picker = ImagePicker();
 
   @override
@@ -38,8 +37,20 @@ class _MainScreenState extends State<MainScreen> {
                   itemBuilder: (context, index) {
                     var post = snapshot.data!.docs[index];
                     return ListTile(
-                        title: Text(formatter.format(post['post_date'].toDate())),
+                        title: postDateListFormat(post['post_date'].toDate()),
                         trailing: circularBackdrop(context, Text(post['waste_count'].toString())),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            DetailsScreen.routeName,
+                            arguments: PostDetailsScreenArguments(
+                              post['post_date'].toDate(),
+                              post['image'],
+                              post['waste_count'], 
+                              post['lat'], 
+                              post['lon']
+                            )
+                          );
+                        },
                     );
                   });
             } else {
@@ -49,6 +60,11 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: NewPostButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  Widget postDateListFormat(DateTime postDate) {
+    final DateFormat formatter = DateFormat('E, MMMM d, y');
+    return Text(formatter.format(postDate));
   }
 
   Widget circularBackdrop(BuildContext context, Text text) {

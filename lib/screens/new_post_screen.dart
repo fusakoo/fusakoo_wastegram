@@ -107,37 +107,36 @@ class _NewPostScreenState extends State<NewPostScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-          // TODO
-          // Show circular if it's still loading or display a button to select if it returns null
-          displayImage(url),
-          SizedBox(height: 40),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: TextFormField(
-              autofocus: true,
-              textAlign: TextAlign.center,
-              decoration: const InputDecoration(
-                hintText: 'Input the waste count'
+            displayImage(url),
+            SizedBox(height: 40),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: TextFormField(
+                autofocus: true,
+                textAlign: TextAlign.center,
+                decoration: const InputDecoration(
+                  hintText: 'Input the waste count'
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) => validateCount(value),
+                onSaved: (value) {
+                  postValues.wasteCount = int.parse(value!);
+                }
               ),
-              keyboardType: TextInputType.number,
-              validator: (value) => validateCount(value),
-              onSaved: (value) {
-                postValues.wasteCount = int.parse(value!);
-              }
             ),
-          ),
-          SizedBox(height: 40),
-          ElevatedButton(
-            child: const Icon(Icons.cloud_upload_outlined),
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                formKey.currentState!.save();
-                updateFirebase(postValues, url, locationData);
-                Navigator.of(context).pop();
-              }
-            },
-          )
-        ]),
+            SizedBox(height: 40),
+            ElevatedButton(
+              child: const Icon(Icons.cloud_upload_outlined),
+              onPressed: () {
+                if (formKey.currentState!.validate()) {
+                  formKey.currentState!.save();
+                  updateFirebase(postValues, url, locationData);
+                  Navigator.of(context).pop();
+                }
+              },
+            )
+          ]
+        ),
       ),
     );
   }
@@ -170,6 +169,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
   String? validateCount(String? count) {
     if (count == '') {
       return 'Please input a number';
+    } else {
+      return null;
     }
   }
 }

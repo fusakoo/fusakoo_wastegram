@@ -19,10 +19,15 @@ class MyApp extends StatelessWidget {
               }
             );
           case 'detailsScreen':
-            // final args = settings.arguments as JournalEntryScreenArguments;
+            final args = settings.arguments as PostDetailsScreenArguments;
             return MaterialPageRoute(
               builder: (context) {
-                return const DetailScreen(
+                return DetailsScreen(
+                  postDate: args.postDate,
+                  imageURL: args.imageURL,
+                  wasteCount: args.wasteCount,
+                  lat: args.latitude,
+                  lon: args.longtitude
                 );
               }
             );
