@@ -101,35 +101,44 @@ class _NewPostScreenState extends State<NewPostScreen> {
         title: Text('New Post'),
         centerTitle: true
       ),
-      body: Column(children: [
-        // TODO
-        // Show circular if it's still loading or display a button to select if it returns null
-        displayImage(url),
-        SizedBox(height: 40),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: TextFormField(
-            autofocus: true,
-            textAlign: TextAlign.center,
-            decoration: const InputDecoration(
-              hintText: 'Input the waste count'
+      body: Form(
+        key: formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+          // TODO
+          // Show circular if it's still loading or display a button to select if it returns null
+          displayImage(url),
+          SizedBox(height: 40),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: TextFormField(
+              autofocus: true,
+              textAlign: TextAlign.center,
+              decoration: const InputDecoration(
+                hintText: 'Input the waste count'
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) => validateCount(value),
+              onSaved: (value) {
+                postValues.wasteCount = int.parse(value!);
+              }
             ),
-            keyboardType: TextInputType.number,
-            validator: (value) => validateCount(value!),
-            onChanged: (value) {
-              postValues.wasteCount = int.parse(value);
-            }
           ),
-        ),
-        SizedBox(height: 40),
-        ElevatedButton(
-          child: Icon(Icons.cloud_upload_outlined),
-          onPressed: () {
-            updateFirebase(postValues, url, locationData);
-            Navigator.of(context).pop();
-          },
-        )
-      ]),
+          SizedBox(height: 40),
+          ElevatedButton(
+            child: const Icon(Icons.cloud_upload_outlined),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                formKey.currentState!.save();
+                updateFirebase(postValues, url, locationData);
+                Navigator.of(context).pop();
+              }
+            },
+          )
+        ]),
+      ),
     );
   }
 
@@ -159,7 +168,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   String? validateCount(String? count) {
-    if (count == null) {
+    if (count == '') {
       return 'Please input a number';
     }
   }
