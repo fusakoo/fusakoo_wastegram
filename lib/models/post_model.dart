@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WastePost {
   late DateTime date;
@@ -14,6 +15,14 @@ class WastePost {
     required this.latitude, 
     required this.longtitude
   });
+
+  WastePost.fromSnapshot(QueryDocumentSnapshot<Object?> post) :
+    date = post['date'].toDate(),
+    imageURL = post['imageURL'],
+    quantity = post['quantity'],
+    latitude = post['latitude'],
+    longtitude = post['longtitude']
+  ;
   
   DateTime get getDate => date;
   String get getDateListFormat {

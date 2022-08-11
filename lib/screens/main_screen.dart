@@ -23,10 +23,8 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true
       ),
       body: StreamBuilder(
-          stream:
-              FirebaseFirestore.instance.collection('posts').snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasData &&
                 snapshot.data!.docs != null &&
                 snapshot.data!.docs.isNotEmpty
@@ -35,30 +33,31 @@ class _MainScreenState extends State<MainScreen> {
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     var post = snapshot.data!.docs[index];
-                    final WastePost wastePost = WastePost(
-                      date: post['date'].toDate(),
-                      imageURL: post['imageURL'],
-                      quantity: post['quantity'],
-                      latitude: post['latitude'],
-                      longtitude: post['longtitude']
-                    );
+                    final WastePost wastePost = WastePost.fromSnapshot(post);
 
-                    return ListTile(
-                        title: Text(wastePost.getDateListFormat),
-                        trailing: circularBackdrop(context, Text(wastePost.getQuantityString)),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            DetailsScreen.routeName,
-                            arguments: PostDetailsScreenArguments(wastePost)
-                          );
-                        },
+                    return Semantics(
+                      onTapHint: 'View details of the post',
+                      child: ListTile(
+                          title: Text(wastePost.getDateListFormat),
+                          trailing: circularBackdrop(context, Text(wastePost.getQuantityString)),
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              DetailsScreen.routeName,
+                              arguments: PostDetailsScreenArguments(wastePost)
+                            );
+                          },
+                      ),
                     );
                   });
             } else {
               return const Center(child: CircularProgressIndicator());
             }
           }),
-      floatingActionButton: NewPostButton(),
+      floatingActionButton: Semantics(
+        button: true,
+        onTapHint: 'Select an image',
+        child: NewPostButton(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

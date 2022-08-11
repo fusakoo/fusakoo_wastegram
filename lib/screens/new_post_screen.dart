@@ -41,20 +41,20 @@ class _NewPostScreenState extends State<NewPostScreen> {
    */
   Future getLocation() async {
     try {
-      var _serviceEnabled = await locationService.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await locationService.requestService();
-        if (!_serviceEnabled) {
+      var serviceEnabled = await locationService.serviceEnabled();
+      if (!serviceEnabled) {
+        serviceEnabled = await locationService.requestService();
+        if (!serviceEnabled) {
           print('Failed to enable service. Returning.');
           Navigator.of(context).pop();
           return;
         }
       }
 
-      var _permissionGranted = await locationService.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await locationService.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
+      var permissionGranted = await locationService.hasPermission();
+      if (permissionGranted == PermissionStatus.denied) {
+        permissionGranted = await locationService.requestPermission();
+        if (permissionGranted != PermissionStatus.granted) {
           print('Location service permission not granted. Returning.');
           Navigator.of(context).pop();
         }
@@ -104,41 +104,56 @@ class _NewPostScreenState extends State<NewPostScreen> {
         title: const Text('New Post'),
         centerTitle: true
       ),
-      body: Form(
-        key: formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            displayImage(url),
-            const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: TextFormField(
-                autofocus: true,
-                textAlign: TextAlign.center,
-                decoration: const InputDecoration(
-                  hintText: 'Input the waste count'
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                displayImagePreview(url),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Semantics(
+                    textField: true,
+                    focused: true,
+                    value: 'Quantity of waste',
+                    child: TextFormField(
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      decoration: const InputDecoration(
+                        hintText: 'Input the waste count'
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) => validateCount(value),
+                      onSaved: (value) {
+                        postValues.quantity = int.parse(value!);
+                      }
+                    ),
+                  ),
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) => validateCount(value),
-                onSaved: (value) {
-                  postValues.quantity = int.parse(value!);
-                }
-              ),
+                const SizedBox(height: 50),
+                Semantics(
+                  button: true,
+                  onTapHint: 'Save a post',
+                  child: FloatingActionButton.extended(
+                    icon: const Icon(Icons.cloud_upload_outlined),
+                    label: const Text('Upload'),
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        formKey.currentState!.save();
+                        updateFirebase(postValues, url, locationData);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                )
+              ]
             ),
-            const SizedBox(height: 40),
-            ElevatedButton(
-              child: const Icon(Icons.cloud_upload_outlined),
-              onPressed: () {
-                if (formKey.currentState!.validate()) {
-                  formKey.currentState!.save();
-                  updateFirebase(postValues, url, locationData);
-                  Navigator.of(context).pop();
-                }
-              },
-            )
-          ]
+          ),
         ),
       ),
     );
@@ -161,7 +176,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
-  Widget displayImage(String? url) {
+  Widget displayImagePreview(String? url) {
     if (url != null) {
       return Image.network(url);
     } else {
