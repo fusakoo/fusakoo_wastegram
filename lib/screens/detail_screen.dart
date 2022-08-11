@@ -27,13 +27,22 @@ class _DetailScreenState extends State<DetailsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(widget.wastepost.getDateDetailFormat),
+          Text(
+            widget.wastepost.getDateDetailFormat,
+            style: Theme.of(context).textTheme.headline5
+          ),
           const SizedBox(height: 40),
           displayImage(widget.wastepost.getImageURL),
           const SizedBox(height: 40),
-          Text('${widget.wastepost.getQuantity} items'),
+          Text(
+            '${widget.wastepost.getQuantity} items',
+            style: Theme.of(context).textTheme.headline6
+          ),
           const SizedBox(height: 40),
-          Text('Location: (${widget.wastepost.getLatitude}, ${widget.wastepost.getLongtitude})')
+          Text(
+            'Location: (${widget.wastepost.getLatitude}, ${widget.wastepost.getLongtitude})',
+            style: Theme.of(context).textTheme.bodySmall
+          )
         ],
       )
     );

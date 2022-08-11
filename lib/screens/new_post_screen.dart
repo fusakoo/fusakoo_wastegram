@@ -46,6 +46,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         _serviceEnabled = await locationService.requestService();
         if (!_serviceEnabled) {
           print('Failed to enable service. Returning.');
+          Navigator.of(context).pop();
           return;
         }
       }
@@ -55,6 +56,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         _permissionGranted = await locationService.requestPermission();
         if (_permissionGranted != PermissionStatus.granted) {
           print('Location service permission not granted. Returning.');
+          Navigator.of(context).pop();
         }
       }
 
@@ -78,6 +80,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile == null) {
       print('File was not selected.');
+      Navigator.of(context).pop();
       return;
     }
     try {
@@ -98,7 +101,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Post'),
+        title: const Text('New Post'),
         centerTitle: true
       ),
       body: Form(
@@ -108,9 +111,9 @@ class _NewPostScreenState extends State<NewPostScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             displayImage(url),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextFormField(
                 autofocus: true,
                 textAlign: TextAlign.center,
@@ -124,7 +127,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 }
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             ElevatedButton(
               child: const Icon(Icons.cloud_upload_outlined),
               onPressed: () {

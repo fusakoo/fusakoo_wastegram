@@ -22,7 +22,7 @@ class WastePost {
     return formatted;
   }
   String get getDateDetailFormat {
-    final DateFormat formatter = DateFormat('EEEE MMMM d, y');
+    final DateFormat formatter = DateFormat('EEEE, MMMM d, y');
     final String formatted = formatter.format(date);
     return formatted;
   }
