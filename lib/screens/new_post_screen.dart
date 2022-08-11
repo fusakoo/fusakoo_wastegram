@@ -142,9 +142,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     label: const Text('Upload'),
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                        updateFirebase(postValues, url, locationData);
-                        Navigator.of(context).pop();
+                        if (url != null) {
+                          formKey.currentState!.save();
+                          updateFirebase(postValues, url, locationData);
+                          Navigator.of(context).pop();
+                        }
                       }
                     },
                   ),
