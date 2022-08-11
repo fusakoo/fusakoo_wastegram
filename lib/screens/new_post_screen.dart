@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:wastegram/wastegram.dart';
@@ -119,10 +119,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Semantics(
                     textField: true,
-                    focused: true,
                     value: 'Quantity of waste',
                     child: TextFormField(
-                      autofocus: true,
                       textAlign: TextAlign.center,
                       decoration: const InputDecoration(
                         hintText: 'Input the waste count'
