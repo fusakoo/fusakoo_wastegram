@@ -120,7 +120,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 keyboardType: TextInputType.number,
                 validator: (value) => validateCount(value),
                 onSaved: (value) {
-                  postValues.wasteCount = int.parse(value!);
+                  postValues.quantity = int.parse(value!);
                 }
               ),
             ),
@@ -150,11 +150,11 @@ class _NewPostScreenState extends State<NewPostScreen> {
     FirebaseFirestore.instance
     .collection('posts')
     .add({
-      'post_date': postDTO.postDate,
-      'image': postDTO.imageURL,
-      'waste_count': postDTO.wasteCount,
-      'lat': postDTO.latitude,
-      'lon': postDTO.longtitude
+      'date': postDTO.postDate,
+      'imageURL': postDTO.imageURL,
+      'quantity': postDTO.quantity,
+      'latitude': postDTO.latitude,
+      'longtitude': postDTO.longtitude
     });
   }
 

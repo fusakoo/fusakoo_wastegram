@@ -23,11 +23,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) {
                 return DetailsScreen(
-                  postDate: args.postDate,
-                  imageURL: args.imageURL,
-                  wasteCount: args.wasteCount,
-                  lat: args.latitude,
-                  lon: args.longtitude
+                  wastepost: args.wastePost
                 );
               }
             );

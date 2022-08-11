@@ -1,7 +1,8 @@
 export 'app.dart';
 // Models
-export 'models/post_dto.dart';
 export 'models/post_details_screen_args.dart';
+export 'models/post_dto.dart';
+export 'models/post_model.dart';
 // Screens
 export 'screens/detail_screen.dart';
 export 'screens/main_screen.dart';

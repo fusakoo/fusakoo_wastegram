@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wastegram/wastegram.dart';
@@ -36,19 +35,21 @@ class _MainScreenState extends State<MainScreen> {
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     var post = snapshot.data!.docs[index];
+                    final WastePost wastePost = WastePost(
+                      date: post['date'].toDate(),
+                      imageURL: post['imageURL'],
+                      quantity: post['quantity'],
+                      latitude: post['latitude'],
+                      longtitude: post['longtitude']
+                    );
+
                     return ListTile(
-                        title: postDateListFormat(post['post_date'].toDate()),
-                        trailing: circularBackdrop(context, Text(post['waste_count'].toString())),
+                        title: Text(wastePost.getDateListFormat),
+                        trailing: circularBackdrop(context, Text(wastePost.getQuantityString)),
                         onTap: () {
                           Navigator.of(context).pushNamed(
                             DetailsScreen.routeName,
-                            arguments: PostDetailsScreenArguments(
-                              post['post_date'].toDate(),
-                              post['image'],
-                              post['waste_count'], 
-                              post['lat'], 
-                              post['lon']
-                            )
+                            arguments: PostDetailsScreenArguments(wastePost)
                           );
                         },
                     );
@@ -60,11 +61,6 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButton: NewPostButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-  }
-
-  Widget postDateListFormat(DateTime postDate) {
-    final DateFormat formatter = DateFormat('E, MMMM d, y');
-    return Text(formatter.format(postDate));
   }
 
   Widget circularBackdrop(BuildContext context, Text text) {

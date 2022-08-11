@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:wastegram/wastegram.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final DateTime postDate;
-  final String imageURL;
-  final int wasteCount;
-  final double lat;
-  final double lon;
+  final WastePost wastepost;
 
   const DetailsScreen({
     Key? key,
-    required this.postDate,
-    required this.imageURL,
-    required this.wasteCount,
-    required this.lat,
-    required this.lon
+    required this.wastepost,
   }) : super(key: key);
 
   static const routeName = 'detailsScreen';
@@ -28,28 +20,23 @@ class _DetailScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Wastegram'),
+        title: const Text('Wastegram'),
         centerTitle: true
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          postDateDetailFormat(widget.postDate),
-          SizedBox(height: 40),
-          displayImage(widget.imageURL),
-          SizedBox(height: 40),
-          Text('${widget.wasteCount} items'),
-          SizedBox(height: 40),
-          Text('Location: (${widget.lat}, ${widget.lon})')
+          Text(widget.wastepost.getDateDetailFormat),
+          const SizedBox(height: 40),
+          displayImage(widget.wastepost.getImageURL),
+          const SizedBox(height: 40),
+          Text('${widget.wastepost.getQuantity} items'),
+          const SizedBox(height: 40),
+          Text('Location: (${widget.wastepost.getLatitude}, ${widget.wastepost.getLongtitude})')
         ],
       )
     );
-  }
-
-  Widget postDateDetailFormat(DateTime postDate) {
-    final DateFormat formatter = DateFormat('EEEE, MMMM d, y');
-    return Text(formatter.format(postDate));
   }
 
   // TODO

@@ -1,9 +1,7 @@
-class PostDetailsScreenArguments {
-  final DateTime postDate;
-  final String imageURL;
-  final int wasteCount;
-  final double latitude;
-  final double longtitude;
+import 'package:wastegram/wastegram.dart';
 
-  PostDetailsScreenArguments(this.postDate, this.imageURL, this.wasteCount, this.latitude, this.longtitude);
+class PostDetailsScreenArguments {
+  final WastePost wastePost;
+
+  PostDetailsScreenArguments(this.wastePost);
 }
