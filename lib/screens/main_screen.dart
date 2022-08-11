@@ -23,38 +23,11 @@ class _MainScreenState extends State<MainScreen> {
         title: mainTitle(),
         centerTitle: true
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
-              return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    var post = snapshot.data!.docs[index];
-                    final WastePost wastePost = WastePost.fromSnapshot(post);
-
-                    return Semantics(
-                      onTapHint: 'View details of the post',
-                      child: ListTile(
-                          title: Text(wastePost.getDateListFormat),
-                          trailing: circularBackdrop(context, Text(wastePost.getQuantityString)),
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              DetailsScreen.routeName,
-                              arguments: PostDetailsScreenArguments(wastePost)
-                            );
-                          },
-                      ),
-                    );
-                  });
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
+      body: const PostList(),
       floatingActionButton: Semantics(
         button: true,
         onTapHint: 'Select an image',
-        child: NewPostButton(),
+        child: const NewPostButton(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -76,16 +49,5 @@ class _MainScreenState extends State<MainScreen> {
         } 
         return const Text('Wastegram');
       });
-  }
-
-  Widget circularBackdrop(BuildContext context, Text text) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white24,
-        borderRadius: BorderRadius.all(Radius.circular(15.0))
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 6.0),
-      child: text
-    );
   }
 }

@@ -4,8 +4,10 @@ export 'models/post_details_screen_args.dart';
 export 'models/post_dto.dart';
 export 'models/post_model.dart';
 // Screens
-export 'screens/detail_screen.dart';
+export 'screens/details_screen.dart';
 export 'screens/main_screen.dart';
 export 'screens/new_post_screen.dart';
 // Widgets
 export 'widgets/new_post_button.dart';
+export 'widgets/post_details.dart';
+export 'widgets/post_list.dart';
