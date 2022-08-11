@@ -5,7 +5,6 @@ import 'package:wastegram/wastegram.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
-
   static const routeName = '/';
 
   @override

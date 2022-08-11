@@ -9,5 +9,7 @@ export 'screens/main_screen.dart';
 export 'screens/new_post_screen.dart';
 // Widgets
 export 'widgets/new_post_button.dart';
+export 'widgets/new_post_column.dart';
 export 'widgets/post_details.dart';
 export 'widgets/post_list.dart';
+export 'widgets/quantity_input_field.dart';

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +8,6 @@ import 'package:wastegram/wastegram.dart';
 
 class NewPostScreen extends StatefulWidget {
   const NewPostScreen({Key? key}) : super(key: key);
-
   static const routeName = 'newPostScreen';
 
   @override
@@ -44,33 +42,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15),
           child: Form(
             key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                displayImagePreview(url),
-                const SizedBox(height: 20),
-                quantityInputField(postValues),
-                const SizedBox(height: 50),
-                Semantics(
-                  button: true,
-                  onTapHint: 'Save a post',
-                  child: FloatingActionButton.extended(
-                    icon: const Icon(Icons.cloud_upload_outlined),
-                    label: const Text('Upload'),
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        if (url != null) {
-                          formKey.currentState!.save();
-                          updateFirebase(postValues, url, locationData);
-                          Navigator.of(context).pop();
-                        }
-                      }
-                    },
-                  ),
-                )
-              ]
-            ),
+            child: NewPostColumn(url: url, postDTO: postValues, formKey: formKey, locationData: locationData)
           ),
         ),
       ),
@@ -95,7 +67,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
           return;
         }
       }
-
       var permissionGranted = await locationService.hasPermission();
       if (permissionGranted == PermissionStatus.denied) {
         permissionGranted = await locationService.requestPermission();
@@ -104,7 +75,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
           Navigator.of(context).pop();
         }
       }
-
       locationData = await locationService.getLocation();
     } on PlatformException catch (e) {
       print('Error: ${e.toString()}, code: ${e.code}');
@@ -139,60 +109,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
     } on FirebaseException catch (e) {
       print('Failed with error \'${e.code}\': ${e.message}');
       return;
-    }
-  }
-
-  void updateFirebase(PostDTO postDTO, String? url, LocationData? locationData) {
-    postDTO.postDate = DateTime.now();
-    postDTO.imageURL = url;
-    postDTO.latitude = locationData!.latitude;
-    postDTO.longtitude = locationData.longitude;
-
-    FirebaseFirestore.instance
-    .collection('posts')
-    .add({
-      'date': postDTO.postDate,
-      'imageURL': postDTO.imageURL,
-      'quantity': postDTO.quantity,
-      'latitude': postDTO.latitude,
-      'longtitude': postDTO.longtitude
-    });
-  }
-
-  Widget quantityInputField(PostDTO postDTO) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Semantics(
-        textField: true,
-        value: 'Quantity of waste',
-        child: TextFormField(
-          textAlign: TextAlign.center,
-          decoration: const InputDecoration(
-            hintText: 'Input the waste count'
-          ),
-          keyboardType: TextInputType.number,
-          validator: (value) => validateCount(value),
-          onSaved: (value) {
-            postDTO.quantity = int.parse(value!);
-          }
-        ),
-      ),
-    );
-  }
-
-  Widget displayImagePreview(String? url) {
-    if (url != null) {
-      return Image.network(url);
-    } else {
-      return const Center(child: CircularProgressIndicator());
-    }
-  }
-
-  String? validateCount(String? count) {
-    if (count == '') {
-      return 'Please input a number';
-    } else {
-      return null;
     }
   }
 }
